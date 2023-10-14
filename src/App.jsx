@@ -2,12 +2,12 @@ import { useState } from 'react'
 import './App.css'
 
 const cardImages = [
-{"src":"/img/helmet-1.png"},
-{"src":"/img/potion-1.png"},
-{"src":"/img/ring-1.png"},
-{"src":"/img/scroll-1.png"},
-{"src":"/img/shield-1.png"},
-{"src":"/img/sword-1.png"},
+{"src":"/img/tiger.jpg"},
+{"src":"/img/lion.jpg"},
+{"src":"/img/pumba.jpg"},
+{"src":"/img/timon.jpg"},
+{"src":"/img/lepoard.jpg"},
+{"src":"/img/cat.jpg"},
 ]
 
 function App() {
@@ -41,7 +41,7 @@ function App() {
           <div className="card" key={card.id}>
             <div>
               <img className="front" src={card.src} alt="card front" />
-              <img className="back" src="/img/cover.png" alt="card back" />
+              <img className="back" src="/img/crown.jpg" alt="card back" />
             </div>
           </div>
         ))}
@@ -50,4 +50,4 @@ function App() {
   );
 }
 
-export default App
+export default App;
