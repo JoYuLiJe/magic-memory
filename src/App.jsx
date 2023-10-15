@@ -20,27 +20,43 @@ function App() {
     setCards(initialCards);
   };
 
-
   //randomize cards
-  const shuffelCards = () =>  {
-    const shuffeledCards = [...cardImages, ...cardImages]
-      .sort(() => Math.random()-0.5)
+  const shuffleCards = () =>  {
+    const shuffledCards = [...cardImages, ...cardImages]
+      .sort(() => Math.random() - 0.5)
       .map((card) => ({ ...card, id: Math.random() }))
 
-    setCards(shuffeledCards)
+    setCards(shuffledCards)
     setTurns(0)
   }
+
+   // Handle card click
+  const handleCardClick = (clickedCard) => {
+   // Toggle the isFlipped state of the clicked card
+    setCards((prevCards) =>
+      prevCards.map((card) =>
+        card.id === clickedCard.id ? { ...card, isFlipped: !card.isFlipped } : card
+    )
+  );
+
+  // Increment the turns
+  setTurns((prevTurns) => prevTurns + 1);
+};
+
 
   return (
     <div className="App">
       <h1>Magic Memory</h1>
-      <button onClick={shuffelCards}>New Game</button>
+      <button onClick={initializeCards}>New Game</button>
+      <button onClick={shuffleCards}>Shuffle Cards</button>
     
       <div className="card-grid">
         {cards.map(card => (
-          <div className="card" key={card.id}>
+          <div key={card.id}
+            className={`card ${card.isFlipped ? 'flipped' : ''}`}
+            onClick={() => handleCardClick(card)}>
             <div>
-              <img className="front" src={card.src} alt="card front" />
+              <img className="front" src={card.isFlipped ? card.src : '/img/crown.jpg'}  alt="card front"/>
               <img className="back" src="/img/crown.jpg" alt="card back" />
             </div>
           </div>
