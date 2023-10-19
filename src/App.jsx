@@ -11,8 +11,9 @@ const cardImages = [
 ]
 
 function App() {
-  const [cards, setCards] = useState([])
-  const [turns, setTurns] = useState(0)
+  const [cards, setCards] = useState([]);
+  const [turns, setTurns] = useState(0);
+  const [clickerCount, setClickerCount] = useState(0);
 
    // Initialize cards with the back image visible
   const initializeCards = () => {
@@ -40,9 +41,14 @@ function App() {
   );
 
   // Increment the turns
+  const handleTurnIncrement = () => {
   setTurns((prevTurns) => prevTurns + 1);
 };
 
+
+const handleIncrementClickerCount = () => {
+  setClickerCount((prevCount) => prevCount + 1);
+};
 
   return (
     <div className="App">
@@ -59,11 +65,18 @@ function App() {
               <img className="front" src={card.isFlipped ? card.src : '/img/crown.jpg'}  alt="card front"/>
               <img className="back" src="/img/crown.jpg" alt="card back" />
             </div>
+            <div>
+              <p>Turns: {turns}</p>
+              <p>Clicker Count: {clickerCount}</p>
+              <button onClick={handleTurnIncrement}>Increment Turns</button>
+              <button onClick={handleIncrementClickerCount}>Increment Clicker Count</button>
+              </div>
           </div>
         ))}
       </div>
     </div>
   );
 }
+};
 
 export default App;
