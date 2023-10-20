@@ -1,14 +1,14 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 import SingleCard from './components/SingleCard'
 
 const cardImages = [
-{"src":"/img/tiger.jpg"},
-{"src":"/img/lion.jpg"},
-{"src":"/img/pumba.jpg"},
-{"src":"/img/timon.jpg"},
-{"src":"/img/lepoard.jpg"},
-{"src":"/img/cat.jpg"},
+{"src":"/img/tiger.jpg", matched: false },
+{"src":"/img/lion.jpg", matched: false },
+{"src":"/img/pumba.jpg", matched: false },
+{"src":"/img/timon.jpg", matched: false },
+{"src":"/img/lepoard.jpg", matched: false },
+{"src":"/img/cat.jpg", matched: false },
 ]
 
 function App() {
@@ -32,6 +32,33 @@ function App() {
     choiceOne ? setChoiceTwo(card) : setChoiceOne(card)
   }
 
+  useEffect(() => {
+    if (choiceOne && choiceTwo)  {
+
+      if(choiceOne.src === choiceTwo.src) {
+        setCards(prevCards => {
+          return prevCards.map(card => {
+            if (card.src === choiceOne.src) {
+              return {...card, matched: true}
+            } else {
+              return card
+            }
+          })
+        })  
+        resetTurn()
+      } else {
+        setTimeout(() => resetTurn(), 1000)
+      }
+    }
+  } , [choiceOne, choiceTwo])
+
+  const resetTurn = () => {
+    setChoiceOne(null)
+    setChoiceTwo(null)
+    setTurns(prevTurns => prevTurns + 1) 
+  }
+
+
   return (
     <div className="App">
       <h1>Magic Memory</h1>
@@ -42,7 +69,9 @@ function App() {
           <SingleCard 
           key={card.id} 
           card={card}
-          handleChoice={handleChoice}/>
+          handleChoice={handleChoice}
+          flipped={card === choiceOne || card === choiceTwo || card.matched}
+          />
         ))}
       </div>
     </div>
