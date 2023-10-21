@@ -12,6 +12,15 @@ const cardImages = [
 {"src":"/img/cat.jpg", matched: false },
 ]
 
+
+// const cards = document.querySelectorAll('.card');
+
+// cards.forEach(card => {
+//   card.addEventListener('click', () => {
+//     card.classList.toggle('flipped');
+//   });
+// });
+
 // const cardFrontImage = [
 //   {"src":"/img/crown.jpg"}
 // ]

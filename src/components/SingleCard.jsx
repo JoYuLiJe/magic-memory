@@ -17,11 +17,11 @@ function SingleCard({ card, handleChoice }) {
     <div className={`card ${isFlipped ? 'flipped' : ''}`} onClick={handleClick}>
       <div className="card-inner">
          <div className="card-front">
-          <img  src={cardFrontImage[0].src} alt="Card"/> 
-         </div>
-        <div className="card-back" >
-            {/* Add a back image or content here */}
-            <img src={card.src} alt="Card"/>
+            {isFlipped ? (
+          <img src={card.src} alt="Card Back" /> 
+            ) : (
+            <img src={cardFrontImage[0].src} alt="Card Front"/>
+            )}
         </div>
       </div>
     </div>
