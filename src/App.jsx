@@ -1,112 +1,123 @@
-import { useEffect, useState } from 'react'
-import './App.css'
-import SingleCard from './components/SingleCard.jsx'
+import { useEffect, useState } from 'react';
+import './App.css';
+import SingleCard from './components/SingleCard.jsx';
 
+import crownImage from './img/crown.jpg';
 
 const cardImages = [
-{"src":"/img/tiger.jpg", matched: false },
-{"src":"/img/lion.jpg", matched: false },
-{"src":"/img/pumba.jpg", matched: false },
-{"src":"/img/timon.jpg", matched: false },
-{"src":"/img/lepoard.jpg", matched: false },
-{"src":"/img/cat.jpg", matched: false },
-]
+  { id: 1, src: '/img/tiger.jpg', matched: false },
+  { id: 2, src: '/img/lion.jpg', matched: false },
+  { id: 3, src: '/img/pumba.jpg', matched: false },
+  { id: 4, src: '/img/timon.jpg', matched: false },
+  { id: 5, src: '/img/leopard.jpg', matched: false },
+  { id: 6, src: '/img/cat.jpg', matched: false },
+  { id: 7, src: '/img/tiger.jpg', matched: false }, // Duplicate of the tiger card
+  { id: 8, src: '/img/lion.jpg', matched: false }, // Duplicate of the lion card
+  { id: 9, src: '/img/pumba.jpg', matched: false }, // Duplicate of the pumba card
+  { id: 10, src: '/img/timon.jpg', matched: false }, // Duplicate of the timon card
+  { id: 11, src: '/img/leopard.jpg', matched: false }, // Duplicate of the leopard card
+  { id: 12, src: '/img/cat.jpg', matched: false }, // Duplicate of the cat card
+];
 
-
-// const cards = document.querySelectorAll('.card');
-
-// cards.forEach(card => {
-//   card.addEventListener('click', () => {
-//     card.classList.toggle('flipped');
-//   });
-// });
-
-// const cardFrontImage = [
-//   {"src":"/img/crown.jpg"}
-// ]
 
 function App() {
-  const [cards, setCards] = useState([])
-  const [turns, setTurns] = useState(0)
-  const [choiceOne, setChoiceOne] = useState(null)
-  const [choiceTwo, setChoiceTwo] = useState(null)
+  // State to manage cards
+  const [cards, setCards] = useState(cardImages);
+
+  // State to keep track of clicks and choices
   const [clicks, setClicks] = useState(0);
+  const [choices, setChoices] = useState({ choiceOne: null, choiceTwo: null });
 
   //randomize cards
   const shuffleCards = () =>  {
-    const shuffledCards = [...cardImages, ...cardImages]
-      .sort(() => Math.random() - 0.5)
-      .map((card) => ({ ...card, id: Math.random() }))
+    const shuffledCards = [...cardImages].sort(() => Math.random() - 0.5);
+    const cardsWithIds = shuffledCards.map((card, index) => ({
+      ...card,
+      id: index + 1,
+    }));
 
-    setCards(shuffledCards);
-    setTurns(0);
+    setCards(cardsWithIds);
 
     // Reset the click count to 0
     setClicks(0);
-  }
+  };
 
   //handle a choice funct, make prop then pass to single card
   const handleChoice = (card) => {
+    const { choiceOne, choiceTwo } = choices;
+
+    // If both choices have been made, return
+    if (choiceOne && choiceTwo) {
+      return;
+    }
+
     if (!choiceOne) {
-      setChoiceOne(card);
+      setChoices({ choiceOne: card, choiceTwo });
     } else {
-      setChoiceTwo(card);
+      setChoices({ choiceOne, choiceTwo: card });
       setClicks(clicks + 1);
     }
-    
+  };
 
-    if (choiceOne) {
-      setChoiceTwo(card);
-    } else {
-      setChoiceOne(card);
-    }
-    
-  }
-
+  // Update card state when choiecs match
   useEffect(() => {
-    if (choiceOne && choiceTwo)  {
+  if (choices.choiceOne && choices.choiceTwo) {
+    const { choiceOne, choiceTwo } = choices;
+    if (choiceOne.src ===choiceTwo.src) {
+      setCards((prevCards) => 
+      prevCards.map((c) => 
+      c.id === choiceOne.id || c.id === choiceTwo.id ? { ...c, matched: true } : c
+      )
+      );
+    } else {
+      // Handle the case where choices do not match (reset them, etc.)
+      setTimeout(() => {
+        // Reset choices
+        setChoices({ choiceOne: null, choiceTwo: null });
 
-      if(choiceOne.src === choiceTwo.src) {
-        setCards(prevCards => {
-          return prevCards.map(card => {
-            if (card.src === choiceOne.src) {
-              return {...card, matched: true}
-            } else {
-              return card
-            }
-          })
-        })  
-        resetTurn()
-      } else {
-        setTimeout(() => resetTurn(), 1000)
-      }
+        // Reset the cards to not flipped state
+        setCards((prevCards) => 
+        prevCards.Cards.map((c) =>
+        c.id === choiceOne.id || c.id === choiceTwo.id ? { ...c, matched: false } : c
+        )
+        );
+      }, 1000); // Add your desired dealy in milliseconds
     }
-  } , [choiceOne, choiceTwo])
-
-  const resetTurn = () => {
-    setChoiceOne(null)
-    setChoiceTwo(null)
-    setTurns(prevTurns => prevTurns + 1) 
   }
+}, [choices]);
+
+// Render the crown image
+const renderCrownImage = () => {
+  if (cards.every((card) => card.matched)) {
+    return (
+      <div className="crown-image-container">
+        <img src={crownImage} alt="Crown" />
+      </div>
+    );
+  }
+  return null;
+};
 
 
   return (
     <div className="App">
       <h1>Magic Memory</h1>
       <button onClick={shuffleCards}>New Game</button>
+      {renderCrownImage()} {/*Display the crown image */}
       <p>Clicks: {clicks}</p> {/* Display the click count */}
       <div className="card-grid">
-        {cards.map(card => (
+        {cards.map((card) => (
           <SingleCard 
           key={card.id} 
           card={card}
           handleChoice={handleChoice}
-          flipped={card === choiceOne || card === choiceTwo || card.matched}
+          flipped={card === choices.choiceOne || card === choices.choiceTwo || card.matched}
           />
         ))}
       </div>
     </div>
   );
-};
+}
 
 export default App;
+
